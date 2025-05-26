@@ -6,7 +6,6 @@
 
 <input @bind="jobName" placeholder="Job Name" class="form-control" />
 <input @bind="cron" placeholder="Cron" class="form-control" />
-<!-- Add dropdown for templates, mapping input, etc. -->
 <button @onclick="SubmitJob">Create</button>
 
 @code {
@@ -18,7 +17,7 @@
         var payload = new
         {
             Name = jobName,
-            Type = "custom",
+            Type = "custom",    
             RawSql = "SELECT 1",
             Cron = cron,
             DatabaseConnectionId = Guid.Parse("..."),

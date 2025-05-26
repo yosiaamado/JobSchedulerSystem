@@ -17,5 +17,3 @@ namespace JobScheduler.Infrastructure.Repositories
             _context.Jobs.Include(j => j.Mappings).FirstOrDefaultAsync(j => j.Id == id);
     }
 }
-    }
-}
