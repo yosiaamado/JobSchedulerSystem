@@ -1,0 +1,32 @@
+﻿@page "/create-job"
+@inject HttpClient Http
+@using System.Net.Http.Json
+
+<h3>Create Job</h3>
+
+<input @bind="jobName" placeholder="Job Name" class="form-control" />
+<input @bind="cron" placeholder="Cron" class="form-control" />
+<!-- Add dropdown for templates, mapping input, etc. -->
+<button @onclick="SubmitJob">Create</button>
+
+@code {
+    private string jobName = "";
+    private string cron = "";
+
+    private async Task SubmitJob()
+    {
+        var payload = new
+        {
+            Name = jobName,
+            Type = "custom",
+            RawSql = "SELECT 1",
+            Cron = cron,
+            DatabaseConnectionId = Guid.Parse("..."),
+            Mappings = new Dictionary<string, string>()
+        };
+
+        var res = await Http.PostAsJsonAsync("api/job", payload);
+        if (res.IsSuccessStatusCode)
+            Console.WriteLine("Job created!");
+    }
+}

@@ -1,0 +1,41 @@
+## .NET & Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.sdf
+*.cache
+*.dbmdl
+
+# Build output
+bin/
+obj/
+out/
+Debug/
+Release/
+
+# NuGet packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Rider/JetBrains
+.idea/
+*.dotCover
+
+# Logs
+*.log
+
+# Publish output
+publish/
+
+# Secrets
+secrets.json
+appsettings.*.local.json
+.env
+
+# Blazor
+wwwroot/build/
+wwwroot/dist/
