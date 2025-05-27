@@ -1,0 +1,11 @@
+﻿<input class="@Class"
+       @bind="Value"
+       @bind:event="oninput"
+       placeholder="@Placeholder" />
+
+@code {
+    [Parameter] public string Placeholder { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public string Class { get; set; } = "form-control";
+}

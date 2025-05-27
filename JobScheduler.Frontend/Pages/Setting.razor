@@ -1,0 +1,33 @@
+﻿@page "/settings"
+@inject HttpClient Http
+
+<div class="container mt-4">
+    <h4>System Settings</h4>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="autoRetry" @bind="autoRetry" />
+        <label class="form-check-label" for="autoRetry">Enable automatic retry for failed jobs</label>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="notify" @bind="notify" />
+        <label class="form-check-label" for="notify">Enable notification on job success/failure</label>
+    </div>
+
+    <button class="btn btn-primary" @onclick="SaveSettings">Save Settings</button>
+</div>
+
+@code {
+    private bool autoRetry = false;
+    private bool notify = true;
+
+    private async Task SaveSettings()
+    {
+        var settings = new
+        {
+            AutoRetry = autoRetry,
+            Notify = notify
+        };
+        await Http.PostAsJsonAsync("api/settings", settings);
+    }
+}

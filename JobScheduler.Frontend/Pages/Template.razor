@@ -1,0 +1,45 @@
+﻿@page "/templates"
+@inject HttpClient Http
+
+<div class="container mt-4">
+    <h4>SQL Templates</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Preview</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var template in templates)
+            {
+                <tr>
+                    <td>@template.Name</td>
+                    <td><code>@template.SqlTemplate?.Substring(0, Math.Min(40, template.SqlTemplate.Length))...</code></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<TemplateDto> templates = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        templates = await Http.GetFromJsonAsync<List<TemplateDto>>("api/template");
+    }
+
+    public class TemplateDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string SqlTemplate { get; set; } = string.Empty;
+    }
+}

@@ -1,22 +1,55 @@
 ﻿@page "/create-job"
 @inject HttpClient Http
 @using System.Net.Http.Json
+@using JobScheduler.Frontend.Components
 
-<h3>Create Job</h3>
+<div class="container mt-5">
 
-<input @bind="jobName" placeholder="Job Name" class="form-control" />
-<input @bind="cron" placeholder="Cron" class="form-control" />
-<button @onclick="SubmitJob">Create</button>
+    <div class="row">
+        <div class="col-6">
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Job Name</label>
+                <div class="col-7">
+                    <CustomInput @bind-Value="jobName" Class="form-control" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Cron Schedule</label>
+                <div class="col-7">
+                    <CustomInput @bind-Value="cron" Class="form-control" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">DB Connection ID</label>
+                <div class="col-7">
+                    <CustomInput @bind-Value="connectionId" Class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col text-end">
+            <button class="btn btn-primary px-4" @onclick="SubmitJob">Submit</button>
+        </div>
+    </div>
+</div>
 
 @code {
     private string jobName = "";
     private string cron = "";
+    private string connectionId = "";
 
     private async Task SubmitJob()
     {
         var payload = new
         {
             Name = jobName,
+            ConnectionId = connectionId,
             Type = "custom",    
             RawSql = "SELECT 1",
             Cron = cron,

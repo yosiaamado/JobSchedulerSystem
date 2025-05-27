@@ -1,12 +1,17 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="top-row d-flex justify-content-start px-4">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <h3>@Title</h3>
+            }
         </div>
 
         <article class="content px-4">
@@ -14,3 +19,23 @@
         </article>
     </main>
 </div>
+
+@code {
+    private string Title => GetTitleForRoute(Navigation.Uri);
+
+    private string GetTitleForRoute(string uri)
+    {
+        var route = uri.Replace(Navigation.BaseUri, "").TrimEnd('/');
+        return route switch
+        {
+            "" => "Home",
+            "create-job" => "Create Job",
+            _ => ""
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        Navigation.LocationChanged += (_, __) => StateHasChanged();
+    }
+}

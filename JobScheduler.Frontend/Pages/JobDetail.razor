@@ -1,0 +1,63 @@
+﻿@page "/jobs/details"
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<div class="container mt-4">
+    <h4>Job Details</h4>
+
+    <p><strong>Name:</strong> @job?.Name</p>
+    <p><strong>Cron:</strong> @job?.Cron</p>
+    <p><strong>Status:</strong> @job?.Status</p>
+
+    <h5 class="mt-4">Execution Logs</h5>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Rows Affected</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in logs)
+            {
+                <tr>
+                    <td>@log.ExecutedAt</td>
+                    <td>@(log.Success ? "Success" : "Fail")</td>
+                    <td>@log.RowsAffected</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    private JobDto? job;
+    private List<ExecutionLogDto> logs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = Nav.ToAbsoluteUri(Nav.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var jobId))
+        {
+            job = await Http.GetFromJsonAsync<JobDto>($"api/job/{jobId}");
+            logs = await Http.GetFromJsonAsync<List<ExecutionLogDto>>($"api/job/{jobId}/logs");
+        }
+    }
+
+    public class JobDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Cron { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+    }
+
+    public class ExecutionLogDto
+    {
+        public DateTime ExecutedAt { get; set; }
+        public bool Success { get; set; }
+        public int RowsAffected { get; set; }
+    }
+}

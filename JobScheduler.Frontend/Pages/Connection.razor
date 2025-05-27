@@ -1,0 +1,48 @@
+﻿@page "/connections"
+@inject HttpClient Http
+
+<div class="container mt-4">
+    <h4>Database Connections</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Server</th>
+                <th>Database</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var conn in connections)
+            {
+                <tr>
+                    <td>@conn.Name</td>
+                    <td>@conn.Host</td>
+                    <td>@conn.DatabaseName</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<ConnectionDto> connections = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        connections = await Http.GetFromJsonAsync<List<ConnectionDto>>("api/connection");
+    }
+
+    public class ConnectionDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Host { get; set; } = string.Empty;
+        public string DatabaseName { get; set; } = string.Empty;
+    }
+}

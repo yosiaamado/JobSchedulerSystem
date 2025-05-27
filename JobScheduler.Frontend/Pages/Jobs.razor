@@ -1,0 +1,55 @@
+﻿@page "/jobs"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+
+<div class="container mt-4">
+    <h4>All Scheduled Jobs</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Cron</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in jobs)
+            {
+                <tr>
+                    <td>@job.Name</td>
+                    <td>@job.Status</td>
+                    <td>@job.Cron</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" @onclick="() => ViewJob(job.Id)">Details</button>
+                        <button class="btn btn-sm btn-success" @onclick="() => RunJob(job.Id)">Run</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteJob(job.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<JobDto> jobs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        jobs = await Http.GetFromJsonAsync<List<JobDto>>("api/job");
+    }
+
+    private void ViewJob(Guid id) => Navigation.NavigateTo($"/jobs/details?id={id}");
+    private async Task RunJob(Guid id) => await Http.PostAsync($"api/job/execute/{id}", null);
+    private async Task DeleteJob(Guid id) => await Http.DeleteAsync($"api/job/{id}");
+
+    public class JobDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string Cron { get; set; } = string.Empty;
+    }
+}

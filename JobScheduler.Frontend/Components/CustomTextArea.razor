@@ -1,0 +1,8 @@
+﻿<textarea class="@Class" rows="@Rows" @bind="Value"></textarea>
+
+@code {
+    [Parameter] public string Class { get; set; } = "form-control";
+    [Parameter] public int Rows { get; set; } = 4;
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+}
