@@ -1,8 +1,18 @@
 ﻿@page "/connections"
+@using JobScheduler.Frontend.Class.InternalClass
+@using JobScheduler.Frontend.Components
 @inject HttpClient Http
+@inject NavigationManager Navigation
 
 <div class="container mt-4">
-    <h4>Database Connections</h4>
+    <div class="row">
+        <div class="col-11">
+            <h4>Database Connections</h4>
+        </div>
+        <div class="col-1">
+            <CustomButton Icon="bi bi-plus" @onclick="GoToCreateConnection">Add</CustomButton>
+        </div>
+    </div>
 
     <table class="table table-bordered">
         <thead>
@@ -37,12 +47,8 @@
     {
         connections = await Http.GetFromJsonAsync<List<ConnectionDto>>("api/connection");
     }
-
-    public class ConnectionDto
+    private void GoToCreateConnection()
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Host { get; set; } = string.Empty;
-        public string DatabaseName { get; set; } = string.Empty;
+        Navigation.NavigateTo("/create-connection");
     }
 }

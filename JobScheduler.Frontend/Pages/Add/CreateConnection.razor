@@ -1,0 +1,82 @@
+﻿@page "/create-connection"
+@using JobScheduler.Frontend.Class.InternalClass
+@using JobScheduler.Frontend.Components
+@inject HttpClient Http
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-6">
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Name</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.Name" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Host</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.Host" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Port</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.PortString" Placeholder="e.g. 1433" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Database</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.DatabaseName" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Username</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.Username" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-5 col-form-label text-end">Password</label>
+                <div class="col-7">
+                    <CustomInput Class="form-control" @bind-Value="connection.Password" Placeholder="******" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col text-end">
+            <button class="btn btn-primary px-4" @onclick="SubmitConnection">Save Connection</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ConnectionDto connection = new();
+
+    private async Task SubmitConnection()
+    {
+        if (int.TryParse(connection.PortString, out var port))
+        {
+            connection.Port = port;
+        }
+
+        var response = await Http.PostAsJsonAsync("api/connection", connection);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Connection saved successfully");
+        }
+        else
+        {
+            Console.WriteLine("Failed to save connection");
+        }
+    }
+}

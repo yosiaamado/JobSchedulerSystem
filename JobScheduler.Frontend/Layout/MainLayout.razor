@@ -26,13 +26,17 @@
     private string GetTitleForRoute(string uri)
     {
         var route = uri.Replace(Navigation.BaseUri, "").TrimEnd('/');
-        return route switch
-        {
-            "" => "Home",
-            "create-job" => "Create Job",
-            _ => ""
-        };
+        if (string.IsNullOrWhiteSpace(route))
+            return "Dashboard";
+
+        var segments = route.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var title = string.Join(" ", segments.Select(s =>
+            System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                s.Replace("-", " ").Replace("_", " "))));
+
+        return title;
     }
+
 
     protected override void OnInitialized()
     {
