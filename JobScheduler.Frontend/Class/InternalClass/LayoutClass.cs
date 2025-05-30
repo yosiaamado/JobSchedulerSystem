@@ -9,4 +9,11 @@ namespace JobScheduler.Frontend.Class.InternalClass
         public string Href { get; set; } = "";
         public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
     }
+    public class TableAction<T>
+    {
+        public string Label { get; set; }
+        public string CssClass { get; set; }
+        public Action<T> Callback { get; set; }
+    }
+
 }

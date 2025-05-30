@@ -1,0 +1,42 @@
+﻿@using JobScheduler.Frontend.Components.Wrapper.ActionRegistry
+@typeparam TItem
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            @foreach (var column in Columns)
+            {
+                <th>@column</th>
+            }
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Data)
+        {
+            <tr>
+                @foreach (var selector in ColumnSelectors)
+                {
+                    <td>@selector(item)</td>
+                }
+                <td>
+                    @foreach (var actionKey in ActionCallbacks.Keys)
+                    {
+                        var meta = TableActionRegistry.DefaultTemplates[actionKey];
+                        <button class="btn btn-sm @meta.CssClass"
+                                @onclick="() => ActionCallbacks[actionKey](item)">
+                            @meta.Label
+                        </button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<string> Columns { get; set; }
+    [Parameter] public List<Func<TItem, object>> ColumnSelectors { get; set; }
+    [Parameter] public Dictionary<string, Func<TItem, Task>> ActionCallbacks { get; set; }
+    [Parameter] public List<TItem> Data { get; set; }
+}
