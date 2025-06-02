@@ -2,6 +2,7 @@
 {
     public class ConnectionDto
     {
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Host { get; set; } = string.Empty;
         public string PortString { get; set; } = "";
@@ -12,7 +13,7 @@
     }
     public class JobDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string Cron { get; set; } = string.Empty;

@@ -24,7 +24,7 @@
                     {
                         var meta = TableActionRegistry.DefaultTemplates[actionKey];
                         <button class="btn btn-sm @meta.CssClass"
-                                @onclick="() => ActionCallbacks[actionKey](item)">
+                        @onclick="() => ActionCallbacks[actionKey](item)">
                             @meta.Label
                         </button>
                     }

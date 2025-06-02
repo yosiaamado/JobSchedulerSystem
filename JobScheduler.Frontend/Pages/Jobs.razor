@@ -6,7 +6,11 @@
 @inject IJSRuntime JS
 
 <div class="container mt-4">
-    <h4>All Scheduled Jobs</h4>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Connections</h4>
+        <button class="btn btn-primary" @onclick="GoToCreateJob">+ Add</button>
+    </div>
+
 
     <TableWrapper TItem="JobDto"
                   Columns='new() { "Name", "Status", "Cron" }'
@@ -19,9 +23,14 @@
 @code {
     private List<JobDto> jobs = new();
 
-    protected override async Task OnInitializedAsync()
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     jobs = await Http.GetFromJsonAsync<List<JobDto>>("api/job");
+    // }
+
+    private void GoToCreateJob()
     {
-        jobs = await Http.GetFromJsonAsync<List<JobDto>>("api/job");
+        Navigation.NavigateTo("/create-job");
     }
 
     private void useView(JobDto job) =>

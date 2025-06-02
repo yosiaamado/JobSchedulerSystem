@@ -15,5 +15,18 @@ namespace JobScheduler.Frontend.Class.InternalClass
         public string CssClass { get; set; }
         public Action<T> Callback { get; set; }
     }
+    public class FieldConfig
+    {
+        public string Label { get; set; }
+        public string Property { get; set; } 
+        public string Type { get; set; } = "text"; 
+        public string Placeholder { get; set; }
+        public bool Required { get; set; } = false;
+    }
+    public class FieldBinding
+    {
+        public Func<object> Getter { get; set; }
+        public Action<object> Setter { get; set; }
+    }
 
 }

@@ -1,54 +1,58 @@
 ﻿@page "/connections"
 @using JobScheduler.Frontend.Class.InternalClass
 @using JobScheduler.Frontend.Components
+@using JobScheduler.Frontend.Components.Wrapper
 @inject HttpClient Http
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-11">
-            <h4>Database Connections</h4>
-        </div>
-        <div class="col-1">
-            <CustomButton Icon="bi bi-plus" @onclick="GoToCreateConnection">Add</CustomButton>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Connections</h4>
+        <button class="btn btn-primary" @onclick="GoToCreateConnection">+ Add</button>
     </div>
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Server</th>
-                <th>Database</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var conn in connections)
-            {
-                <tr>
-                    <td>@conn.Name</td>
-                    <td>@conn.Host</td>
-                    <td>@conn.DatabaseName</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <TableWrapper TItem="ConnectionDto"
+                  Columns='new() { "Name", "Port", "DatabaseName" }'
+                  ColumnSelectors='new() { conn => conn.Name, con => con.Port, conn => conn.DatabaseName }'
+                  ActionCallbacks="@JobActionCallbacks"
+                  Data="@connections" />
+
 </div>
 
 @code {
     private List<ConnectionDto> connections = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        connections = await Http.GetFromJsonAsync<List<ConnectionDto>>("api/connection");
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     connections = await Http.GetFromJsonAsync<List<ConnectionDto>>("api/connection");
+    // }
+
     private void GoToCreateConnection()
     {
         Navigation.NavigateTo("/create-connection");
     }
+
+    private void useView(ConnectionDto conn) =>
+    Navigation.NavigateTo($"/jobs/details?id={conn.Id}");
+
+    private async Task useRun(ConnectionDto conn) =>
+        await Http.PostAsync($"api/job/execute/{conn.Id}", null);
+
+    private async Task useDelete(ConnectionDto conn)
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to delete connection '{conn.Name}'?");
+        if (confirmed)
+        {
+            await Http.DeleteAsync($"api/job/{conn.Id}");
+            connections.Remove(conn);
+            StateHasChanged();
+        }
+    }
+    private Dictionary<string, Func<ConnectionDto, Task>> JobActionCallbacks => new()
+    {
+        { "View", conn => { useView(conn); return Task.CompletedTask; } },
+        { "Run", useRun },
+        { "Delete", useDelete }
+    };
 }
